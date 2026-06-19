@@ -146,28 +146,66 @@ body {
   font-weight: 500;
 }
 
-/* ===== GRIGLIA CARD SQUADRE ===== */
+/* ===== GRIGLIE CARD (squadre e preferiti) ===== */
 
-/* mobile: 1 colonna */
-.griglia-squadre {
+/* sotto 481px: 1 colonna */
+.griglia-squadre,
+.griglia-preferiti {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
-  margin-top: 20px;
 }
 
-/* piccoli tablet: 2 colonne */
-@media (min-width: 480px) {
-  .griglia-squadre {
+.griglia-squadre { margin-top: 20px; }
+
+/* 481px+: 2 colonne fisse — ogni card prende metà dello spazio,
+   l'ultima card sola nella riga (posizione dispari) occupa tutta la riga */
+@media (min-width: 481px) {
+  .griglia-squadre,
+  .griglia-preferiti {
     grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .griglia-squadre > *:last-child:nth-child(2n+1),
+  .griglia-preferiti > *:last-child:nth-child(2n+1) {
+    grid-column: 1 / -1;
   }
 }
 
-/* desktop: colonne auto-fill */
-@media (min-width: 900px) {
-  .griglia-squadre {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+/* 768px+: 3 colonne — reset regola 2-col e applica quella a 3 colonne */
+@media (min-width: 768px) {
+  .griglia-squadre,
+  .griglia-preferiti {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .griglia-squadre > *:last-child:nth-child(2n+1),
+  .griglia-preferiti > *:last-child:nth-child(2n+1) {
+    grid-column: auto;
+  }
+
+  .griglia-squadre > *:last-child:nth-child(3n+1),
+  .griglia-preferiti > *:last-child:nth-child(3n+1) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* 1024px+: 4 colonne — reset regola 3-col e applica quella a 4 colonne */
+@media (min-width: 1024px) {
+  .griglia-squadre,
+  .griglia-preferiti {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .griglia-squadre > *:last-child:nth-child(3n+1),
+  .griglia-preferiti > *:last-child:nth-child(3n+1) {
+    grid-column: auto;
+  }
+
+  .griglia-squadre > *:last-child:nth-child(4n+1),
+  .griglia-preferiti > *:last-child:nth-child(4n+1) {
+    grid-column: 1 / -1;
   }
 }
 
@@ -359,4 +397,95 @@ body {
   color: #888;
   font-style: italic;
   font-size: 0.9rem;
+}
+
+/* ===== SEZIONE PREFERITI ===== */
+
+.preferiti-section {
+  margin-top: 20px;
+}
+
+.preferiti-titolo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+/* Card preferito: sfondo bianco uguale alle card dei risultati */
+.card-preferito {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.card-preferito:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.13);
+}
+
+/* ===== PULSANTI AZIONI PREFERITI ===== */
+
+/* Bottone "★ Aggiungi ai preferiti" sulle card di ricerca */
+.btn-aggiungi {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 7px 10px;
+  background: hsl(45, 90%, 55%);
+  color: #3a2800;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-aggiungi:hover {
+  background: hsl(45, 90%, 48%);
+}
+
+/* Stato "già nei preferiti": tono spento */
+.btn-aggiungi--attivo {
+  background: #d0d8eb;
+  color: #555;
+}
+
+.btn-aggiungi--attivo:hover {
+  background: #bcc8e0;
+}
+
+/* Bottone "Rimuovi" nelle card dei preferiti */
+.btn-rimuovi {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 7px 10px;
+  background: #ffe5e5;
+  color: #aa0000;
+  border: 1px solid #ffb3b3;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-rimuovi:hover {
+  background: #ffd0d0;
+}
+
+/* ===== INTESTAZIONE PERSISTENTE RISULTATI ===== */
+
+/* Rimane visibile anche durante la vista dettagli */
+.sezione-titolo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 24px 0 12px;
 }

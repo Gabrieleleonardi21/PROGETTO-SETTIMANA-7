@@ -26,6 +26,15 @@
     </header>
 
     <main class="container">
+      <!-- Sezione preferiti: visibile solo se ci sono squadre salvate -->
+      <section id="preferiti-section" class="preferiti-section" hidden>
+        <h2 class="preferiti-titolo">⭐ Le tue squadre preferite</h2>
+        <div id="griglia-preferiti" class="griglia-preferiti"></div>
+      </section>
+
+      <!-- Intestazione persistente: appare dopo la prima ricerca e resta visibile anche nei dettagli -->
+      <h2 id="risultati-heading" class="sezione-titolo" hidden>Squadre trovate</h2>
+
       <section id="risultati-section">
         <!-- Spinner, errore, griglia card squadre -->
         <div id="spinner" class="spinner" hidden></div>

@@ -1,6 +1,7 @@
 // SportsHub — Week Project Settimana VII
 
-const BASE_URL = 'https://www.thesportsdb.com/api/v1/json/3';
+const BASE_URL   = 'https://www.thesportsdb.com/api/v1/json/3';
+const STORAGE_KEY = 'sportshub_preferiti';
 
 // ===== HELPER DOM =====
 
@@ -121,17 +122,114 @@ let squadraAttiva = null; // Squadra selezionata correntemente
 
 // ===== RIFERIMENTI DOM =====
 
-const formRicerca      = document.getElementById('search-form');
-const inputRicerca     = document.getElementById('search-input');
-const spinner          = document.getElementById('spinner');
-const boxErrore        = document.getElementById('errore');
-const grigliaSquadre   = document.getElementById('griglia-squadre');
-const sezioneRisultati = document.getElementById('risultati-section');
-const sezioneDettagli  = document.getElementById('dettagli-section');
-const btnIndietro      = document.getElementById('btn-indietro');
-const dettagliHeader   = document.getElementById('dettagli-header');
-const listaProssimi    = document.getElementById('lista-prossimi');
-const listaUltimi      = document.getElementById('lista-ultimi');
+const formRicerca       = document.getElementById('search-form');
+const inputRicerca      = document.getElementById('search-input');
+const spinner           = document.getElementById('spinner');
+const boxErrore         = document.getElementById('errore');
+const grigliaSquadre    = document.getElementById('griglia-squadre');
+const sezioneRisultati  = document.getElementById('risultati-section');
+const sezioneDettagli   = document.getElementById('dettagli-section');
+const btnIndietro       = document.getElementById('btn-indietro');
+const dettagliHeader    = document.getElementById('dettagli-header');
+const listaProssimi     = document.getElementById('lista-prossimi');
+const listaUltimi       = document.getElementById('lista-ultimi');
+const sezionePreferiti  = document.getElementById('preferiti-section');
+const grigliaPreferiti  = document.getElementById('griglia-preferiti');
+const risultatiHeading  = document.getElementById('risultati-heading');
+
+// ===== PREFERITI =====
+
+// Legge l'array preferiti dal localStorage
+function caricaPreferiti() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+// Persiste l'array preferiti nel localStorage
+function salvaPreferiti(lista) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+}
+
+// Controlla se una squadra è già nei preferiti
+function ePreferito(id) {
+  return caricaPreferiti().some(p => p.id === id);
+}
+
+// Aggiunge una squadra ai preferiti (ignora i duplicati)
+function aggiungiPreferito(squadra) {
+  const lista = caricaPreferiti();
+  if (lista.some(p => p.id === squadra.id)) return;
+  lista.push({ id: squadra.id, nome: squadra.nome, logo: squadra.logo, lega: squadra.lega, paese: squadra.paese });
+  salvaPreferiti(lista);
+  renderPreferiti();
+  aggiornaBottoniGriglia();
+}
+
+// Rimuove una squadra dai preferiti tramite id
+function rimuoviPreferito(id) {
+  salvaPreferiti(caricaPreferiti().filter(p => p.id !== id));
+  renderPreferiti();
+  aggiornaBottoniGriglia();
+}
+
+// Aggiorna il testo/stile dei pulsanti "Aggiungi" visibili nella griglia risultati
+// (necessario quando si rimuove dai preferiti partendo dalla sezione "Le tue squadre")
+function aggiornaBottoniGriglia() {
+  document.querySelectorAll('[data-preferito-id]').forEach(btn => {
+    const id    = btn.dataset.preferitoId;
+    const isPref = ePreferito(id);
+    btn.textContent = isPref ? '★ Preferita' : '★ Aggiungi ai preferiti';
+    btn.classList.toggle('btn-aggiungi--attivo', isPref);
+  });
+}
+
+// Rende le card della sezione "Le tue squadre"
+function renderPreferiti() {
+  const lista = caricaPreferiti();
+  sezionePreferiti.hidden = lista.length === 0;
+  grigliaPreferiti.replaceChildren();
+
+  for (const p of lista) {
+    const card = make('div', { className: 'card-preferito' });
+    card.append(creaLogo(p.logo, p.nome, 'card-logo'));
+    card.append(
+      make('p', { className: 'card-nome', textContent: p.nome }),
+      make('p', { className: 'card-meta', textContent: `${p.lega} · ${p.paese}` })
+    );
+
+    const btnRimuovi = make('button', { className: 'btn-rimuovi', textContent: '🗑 Rimuovi' });
+    // stopPropagation evita di aprire i dettagli quando si clicca "Rimuovi"
+    btnRimuovi.addEventListener('click', (e) => {
+      e.stopPropagation();
+      rimuoviPreferito(p.id);
+    });
+    card.append(btnRimuovi);
+
+    // Clic sulla card apre i dettagli direttamente senza ricercare di nuovo
+    card.addEventListener('click', () => {
+      const squadra = new Squadra({
+        idTeam: p.id, strTeam: p.nome, strBadge: p.logo, strLeague: p.lega, strCountry: p.paese
+      });
+      apriDettagli(squadra);
+    });
+
+    grigliaPreferiti.append(card);
+  }
+}
+
+// ===== DEBOUNCE =====
+
+// Restituisce una versione della funzione che si attiva solo dopo `ms` ms di inattività
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
+}
 
 // ===== RENDER =====
 
@@ -172,7 +270,24 @@ function renderSquadre(squadre) {
       make('p', { className: 'card-meta', textContent: `${squadra.lega} · ${squadra.paese}` })
     );
 
-    // Al click si caricano i dettagli della squadra
+    // Pulsante preferiti: aggiorna testo e stile in base allo stato corrente
+    const isPref = ePreferito(squadra.id);
+    const btnAggiungi = make('button', {
+      className: isPref ? 'btn-aggiungi btn-aggiungi--attivo' : 'btn-aggiungi',
+      textContent: isPref ? '★ Preferita' : '★ Aggiungi ai preferiti',
+      'data-preferito-id': squadra.id
+    });
+    btnAggiungi.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (ePreferito(squadra.id)) {
+        rimuoviPreferito(squadra.id);
+      } else {
+        aggiungiPreferito(squadra);
+      }
+    });
+    card.append(btnAggiungi);
+
+    // Al click sulla card (non sul pulsante) si caricano i dettagli
     card.addEventListener('click', () => apriDettagli(squadra));
 
     grigliaSquadre.append(card);
@@ -270,12 +385,13 @@ function tornaRisultati() {
 
 // ===== EVENTI =====
 
-formRicerca.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const query = inputRicerca.value.trim();
+// Logica di ricerca estratta per essere richiamata sia da submit che da debounce
+async function eseguiRicerca(query) {
   if (!query) return;
 
-  // Assicura di essere nella sezione risultati
+  // Mostra l'intestazione "Squadre trovate" al primo utilizzo e la mantiene visibile
+  risultatiHeading.hidden = false;
+
   sezioneDettagli.hidden = true;
   sezioneRisultati.hidden = false;
 
@@ -291,6 +407,24 @@ formRicerca.addEventListener('submit', async (e) => {
   } finally {
     impostaSpinner(false);
   }
+}
+
+// Versione debounced per la ricerca live mentre si digita (W7 D3)
+const ricercaDebounced = debounce((query) => eseguiRicerca(query), 400);
+
+// Submit immediato (tasto Invio o bottone "Cerca")
+formRicerca.addEventListener('submit', (e) => {
+  e.preventDefault();
+  eseguiRicerca(inputRicerca.value.trim());
+});
+
+// Ricerca live: parte 400ms dopo l'ultima battitura
+inputRicerca.addEventListener('input', () => {
+  const query = inputRicerca.value.trim();
+  if (query) ricercaDebounced(query);
 });
 
 btnIndietro.addEventListener('click', tornaRisultati);
+
+// Inizializza la sezione preferiti al caricamento della pagina
+renderPreferiti();
