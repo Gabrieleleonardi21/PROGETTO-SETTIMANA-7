@@ -1,8 +1,8 @@
-/* SportsHub — Week Project Settimana VII
-   Reset minimale + tipografia di base. Aggiungi qui le tue regole. */
+/* SportsHub — Week Project Settimana VII — Mobile First */
 
-
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -16,15 +16,347 @@ body {
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 16px;
 }
 
+@media (min-width: 768px) {
+  .container {
+    padding: 24px 20px;
+  }
+}
+
+/* ===== HEADER ===== */
+
 .site-header {
-  background-color: hsl(220, 60%, 25%);
+  background-color: #193366;
   color: white;
-  padding: 30px 20px;
+  padding: 20px 16px;
   text-align: center;
 }
 
+@media (min-width: 768px) {
+  .site-header {
+    padding: 28px 20px;
+  }
+}
 
-/* Aggiungi qui le tue regole per: form, risultati, card squadra, eventi. */
+.site-title {
+  margin: 0 0 4px; /* ridotto per avvicinare il sottotitolo */
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+}
+
+/* sottotitolo dell'h1 */
+.site-subtitle {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  letter-spacing: 0.3px;
+}
+
+@media (min-width: 480px) {
+  .site-title {
+    font-size: 2rem;
+  }
+}
+
+/* ===== FORM RICERCA ===== */
+
+/* mobile: colonna */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* tablet+: riga */
+@media (min-width: 480px) {
+  .search-form {
+    flex-direction: row;
+  }
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+}
+
+@media (min-width: 480px) {
+  .search-input {
+    flex: 1;
+    width: auto;
+  }
+}
+
+.btn-cerca {
+  width: 100%;
+  padding: 10px 22px;
+  background: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+@media (min-width: 480px) {
+  .btn-cerca {
+    width: auto;
+  }
+}
+
+.btn-cerca:hover {
+  background: #e8e8e8;
+}
+
+/* ===== SPINNER ===== */
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  margin: 48px auto;
+  border: 5px solid #d0d8eb;
+  border-top-color: #193366;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== ERRORE ===== */
+
+.errore {
+  background: #ffe5e5;
+  color: #aa0000;
+  border: 1px solid #ffb3b3;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin: 20px 0;
+  font-weight: 500;
+}
+
+/* ===== GRIGLIA CARD SQUADRE ===== */
+
+/* mobile: 1 colonna */
+.griglia-squadre {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* piccoli tablet: 2 colonne */
+@media (min-width: 480px) {
+  .griglia-squadre {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* desktop: colonne auto-fill */
+@media (min-width: 900px) {
+  .griglia-squadre {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* ===== CARD SQUADRA ===== */
+
+.card-squadra {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.card-squadra:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+}
+
+.card-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* placeholder se il logo non esiste */
+.card-logo-placeholder {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 10px;
+  background: #e8ecf5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #aab;
+}
+
+.card-nome {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #193366;
+}
+
+.card-meta {
+  font-size: 0.82rem;
+  color: #666;
+  margin: 0;
+}
+
+.msg-vuoto {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #666;
+  padding: 40px 0;
+  font-size: 1.05rem;
+}
+
+/* ===== SEZIONE DETTAGLI ===== */
+
+.btn-indietro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background: #e8ecf5;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-indietro:hover {
+  background: #d0d8eb;
+}
+
+/* mobile: header dettagli in colonna */
+.dettagli-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+/* tablet+: header in riga */
+@media (min-width: 480px) {
+  .dettagli-header {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+.dettagli-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.dettagli-info h2 {
+  margin: 0 0 4px;
+  color: #193366;
+}
+
+.dettagli-info p {
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* ===== LISTE EVENTI ===== */
+
+/* mobile: colonna */
+.dettagli-eventi {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+/* tablet+: due colonne */
+@media (min-width: 640px) {
+  .dettagli-eventi {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.eventi-titolo {
+  font-size: 1.1rem;
+  color: #193366;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #193366;
+}
+
+.lista-eventi {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.evento-item {
+  background: white;
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+
+.evento-data {
+  font-size: 0.78rem;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.evento-partita {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #1a1a1a;
+}
+
+.evento-punteggio {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 8px;
+  background: #193366;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.msg-nessun-evento {
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
+}

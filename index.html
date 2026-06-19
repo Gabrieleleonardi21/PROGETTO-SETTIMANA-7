@@ -8,16 +8,47 @@
   </head>
   <body>
     <header class="site-header">
-      <!-- Titolo dell'app + form di ricerca -->
+      <hgroup>
+        <h1 class="site-title">SportsHub</h1>
+        <p class="site-subtitle">Cerca una squadra, scopri prossime partite e ultimi risultati</p>
+      </hgroup>
+      <form id="search-form" class="search-form">
+        <input
+          id="search-input"
+          class="search-input"
+          type="text"
+          placeholder="Cerca una squadra…"
+          autocomplete="off"
+          required
+        />
+        <button type="submit" class="btn-cerca">Cerca</button>
+      </form>
     </header>
 
     <main class="container">
       <section id="risultati-section">
-        <!-- Spinner, errore, lista risultati ricerca squadre -->
+        <!-- Spinner, errore, griglia card squadre -->
+        <div id="spinner" class="spinner" hidden></div>
+        <div id="errore" class="errore" hidden></div>
+        <div id="griglia-squadre" class="griglia-squadre"></div>
       </section>
 
       <section id="dettagli-section" hidden>
-        <!-- Visibile dopo click su una squadra: prossimi eventi + ultimi risultati -->
+        <!-- Visibile dopo click su una squadra -->
+        <button id="btn-indietro" class="btn-indietro">
+          ← Torna ai risultati
+        </button>
+        <div id="dettagli-header" class="dettagli-header"></div>
+        <div class="dettagli-eventi">
+          <div>
+            <h2 class="eventi-titolo">Prossimi eventi</h2>
+            <ul id="lista-prossimi" class="lista-eventi"></ul>
+          </div>
+          <div>
+            <h2 class="eventi-titolo">Ultimi risultati</h2>
+            <ul id="lista-ultimi" class="lista-eventi"></ul>
+          </div>
+        </div>
       </section>
     </main>
 
