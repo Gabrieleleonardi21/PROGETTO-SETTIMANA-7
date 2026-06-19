@@ -4,83 +4,86 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SportsHub — Eventi sportivi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
-  <body>
-    <header class="site-header">
+  <body class="bg-light">
+    <header class="bg-primary text-white py-4 text-center">
       <hgroup>
-        <h1 class="site-title">SportsHub</h1>
-        <p class="site-subtitle">Cerca una squadra, scopri prossime partite e ultimi risultati</p>
+        <h1 class="site-title fs-3 fw-bold mb-1">SportsHub</h1>
+        <p class="site-subtitle opacity-75 small mb-3">Cerca una squadra, scopri prossime partite e ultimi risultati</p>
       </hgroup>
-      <form id="search-form" class="search-form">
+      <form id="search-form" class="d-flex flex-column flex-sm-row gap-2 justify-content-center mx-auto" style="max-width:560px">
         <input
           id="search-input"
-          class="search-input"
+          class="form-control"
           type="text"
           placeholder="Cerca una squadra…"
           autocomplete="off"
           required
         />
-        <button type="submit" class="btn-cerca">Cerca</button>
+        <button type="submit" class="btn btn-light fw-semibold">Cerca</button>
       </form>
     </header>
 
-    <main class="container">
+    <main class="container py-3">
       <!-- Filtro per sport -->
-      <div class="filtro-sport">
-        <button type="button" class="btn-filtro btn-filtro--attivo" data-sport="">Tutti</button>
-        <button type="button" class="btn-filtro" data-sport="Soccer">Calcio</button>
-        <button type="button" class="btn-filtro" data-sport="Basketball">Basket</button>
-        <button type="button" class="btn-filtro" data-sport="American Football">Football</button>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button type="button" class="btn btn-primary rounded-pill btn-sm btn-filtro" data-sport="">Tutti</button>
+        <button type="button" class="btn btn-outline-primary rounded-pill btn-sm btn-filtro" data-sport="Soccer">Calcio</button>
+        <button type="button" class="btn btn-outline-primary rounded-pill btn-sm btn-filtro" data-sport="Basketball">Basket</button>
+        <button type="button" class="btn btn-outline-primary rounded-pill btn-sm btn-filtro" data-sport="American Football">Football</button>
       </div>
 
       <!-- Sezione preferiti: visibile solo se ci sono squadre salvate -->
-      <section id="preferiti-section" class="preferiti-section" hidden>
-        <h2 class="preferiti-titolo">⭐ Le tue squadre preferite</h2>
-        <div id="griglia-preferiti" class="griglia-preferiti"></div>
+      <section id="preferiti-section" class="mt-4" hidden>
+        <h2 class="h5 fw-bold mb-3">⭐ Le tue squadre preferite</h2>
+        <div id="griglia-preferiti" class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3"></div>
       </section>
 
       <!-- Prossimi appuntamenti delle squadre preferite (caricati in parallelo all'avvio) -->
-      <section id="appuntamenti-section" class="appuntamenti-section" hidden>
-        <h2 class="preferiti-titolo">📅 I tuoi prossimi appuntamenti</h2>
-        <ul id="lista-appuntamenti" class="lista-appuntamenti"></ul>
+      <section id="appuntamenti-section" class="mt-4" hidden>
+        <h2 class="h5 fw-bold mb-3">📅 I tuoi prossimi appuntamenti</h2>
+        <ul id="lista-appuntamenti" class="list-unstyled d-flex flex-column gap-2"></ul>
       </section>
 
       <!-- Intestazione persistente: appare dopo la prima ricerca e resta visibile anche nei dettagli -->
-      <h2 id="risultati-heading" class="sezione-titolo" hidden>Squadre trovate</h2>
+      <h2 id="risultati-heading" class="h5 fw-bold mt-4 mb-2" hidden>Squadre trovate</h2>
 
       <section id="risultati-section">
-        <!-- Spinner, errore, griglia card squadre -->
-        <div id="spinner" class="spinner" hidden></div>
-        <div id="errore" class="errore" hidden></div>
-        <div id="griglia-squadre" class="griglia-squadre"></div>
+        <!-- Spinner Bootstrap -->
+        <div id="spinner" class="spinner-border text-primary d-block mx-auto my-5" role="status" hidden>
+          <span class="visually-hidden">Caricamento…</span>
+        </div>
+        <div id="errore" class="alert alert-danger mt-3" hidden></div>
+        <div id="griglia-squadre" class="row g-3 mt-1"></div>
       </section>
 
       <section id="dettagli-section" hidden>
         <!-- Visibile dopo click su una squadra -->
-        <button id="btn-indietro" class="btn-indietro">
+        <button id="btn-indietro" class="btn btn-light btn-sm mb-3">
           ← Torna ai risultati
         </button>
-        <div id="dettagli-header" class="dettagli-header"></div>
-        <div class="dettagli-eventi">
-          <div>
-            <h2 class="eventi-titolo">Prossimi eventi</h2>
-            <ul id="lista-prossimi" class="lista-eventi"></ul>
+        <div id="dettagli-header" class="card border-0 shadow-sm p-3 mb-4 d-flex flex-column flex-sm-row align-items-center gap-3 text-center text-sm-start"></div>
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <h2 class="h6 fw-bold text-primary border-bottom border-primary pb-2 mb-3">Prossimi eventi</h2>
+            <ul id="lista-prossimi" class="list-unstyled d-flex flex-column gap-2"></ul>
           </div>
-          <div>
-            <h2 class="eventi-titolo">Ultimi risultati</h2>
-            <ul id="lista-ultimi" class="lista-eventi"></ul>
+          <div class="col-12 col-md-6">
+            <h2 class="h6 fw-bold text-primary border-bottom border-primary pb-2 mb-3">Ultimi risultati</h2>
+            <ul id="lista-ultimi" class="list-unstyled d-flex flex-column gap-2"></ul>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- Modal dettagli evento -->
-    <div id="modal-evento" class="modal" hidden>
-      <div id="modal-overlay" class="modal-overlay"></div>
-      <div class="modal-contenuto">
-        <button id="modal-chiudi" class="modal-chiudi" aria-label="Chiudi">✕</button>
-        <h3 id="modal-titolo" class="modal-titolo"></h3>
+    <!-- Modal dettagli evento (overlay custom, non il modal JS di Bootstrap) -->
+    <div id="modal-evento" class="modal-overlay-wrapper" hidden>
+      <div id="modal-overlay" class="modal-overlay-bg"></div>
+      <div class="modal-box">
+        <button id="modal-chiudi" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Chiudi"></button>
+        <h3 id="modal-titolo" class="h6 fw-bold text-primary pe-4 mb-3"></h3>
         <div id="modal-corpo"></div>
       </div>
     </div>

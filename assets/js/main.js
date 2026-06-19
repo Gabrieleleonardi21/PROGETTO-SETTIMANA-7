@@ -133,8 +133,13 @@ btnIndietro.addEventListener('click', tornaRisultati);
 document.querySelectorAll('.btn-filtro').forEach(btn => {
   btn.addEventListener('click', () => {
     filtroSport = btn.dataset.sport;
-    document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('btn-filtro--attivo'));
-    btn.classList.add('btn-filtro--attivo');
+    // Rimuove lo stato attivo da tutti i filtri, poi lo aggiunge al bottone cliccato
+    document.querySelectorAll('.btn-filtro').forEach(b => {
+      b.classList.remove('btn-primary');
+      b.classList.add('btn-outline-primary');
+    });
+    btn.classList.remove('btn-outline-primary');
+    btn.classList.add('btn-primary');
     applicaFiltro();
   });
 });

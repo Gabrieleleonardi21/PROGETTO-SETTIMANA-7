@@ -100,7 +100,9 @@ function aggiornaBottoniGriglia() {
     const id     = btn.dataset.preferitoId;
     const isPref = ePreferito(id);
     btn.textContent = isPref ? '★ Preferita' : '★ Aggiungi ai preferiti';
-    btn.classList.toggle('btn-aggiungi--attivo', isPref);
+    // Scambia tra btn-warning (non preferita) e btn-secondary (già preferita)
+    btn.classList.toggle('btn-warning', !isPref);
+    btn.classList.toggle('btn-secondary', isPref);
   });
 }
 
@@ -112,14 +114,17 @@ function renderPreferiti() {
   grigliaPreferiti.replaceChildren();            // `grigliaPreferiti` definito in main.js
 
   for (const p of lista) {
-    const card = make('div', { className: 'card-preferito' });
+    // Bootstrap grid: ogni card va dentro una colonna .col
+    const col  = make('div', { className: 'col' });
+    const card = make('div', { className: 'card h-100 text-center p-3 card-hover border-0 shadow-sm' });
+
     card.append(creaLogo(p.logo, p.nome, 'card-logo'));
     card.append(
-      make('p', { className: 'card-nome', textContent: p.nome }),
-      make('p', { className: 'card-meta', textContent: `${p.lega} · ${p.paese}` })
+      make('p', { className: 'fw-bold text-primary mb-1', textContent: p.nome }),
+      make('p', { className: 'text-muted small mb-2',     textContent: `${p.lega} · ${p.paese}` })
     );
 
-    const btnRimuovi = make('button', { className: 'btn-rimuovi', textContent: '🗑 Rimuovi' });
+    const btnRimuovi = make('button', { className: 'btn btn-sm w-100 mt-2 btn-rimuovi', textContent: '🗑 Rimuovi' });
     // stopPropagation evita di aprire i dettagli quando si clicca "Rimuovi"
     btnRimuovi.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -135,7 +140,8 @@ function renderPreferiti() {
       apriDettagli(squadra); // definita in main.js
     });
 
-    grigliaPreferiti.append(card);
+    col.append(card);
+    grigliaPreferiti.append(col);
   }
 }
 
@@ -146,11 +152,11 @@ function renderAppuntamenti(eventi) {
   listaAppuntamenti.replaceChildren();               // `listaAppuntamenti` definito in main.js
 
   for (const ev of eventi) {
-    const li = make('li', { className: 'appuntamento-item' });
+    const li = make('li', { className: 'card p-2 appuntamento-item border-0 shadow-sm' });
     li.append(
-      make('div', { className: 'evento-data',    textContent: ev.dataFormattata() }),
-      make('div', { className: 'evento-partita', textContent: `${ev.casa} vs ${ev.trasferta}` }),
-      make('div', { className: 'evento-lega',    textContent: ev.lega || '' })
+      make('div', { className: 'text-muted small mb-1', textContent: ev.dataFormattata() }),
+      make('div', { className: 'fw-semibold small',     textContent: `${ev.casa} vs ${ev.trasferta}` }),
+      make('div', { className: 'text-muted small mt-1', textContent: ev.lega || '' })
     );
     li.addEventListener('click', () => apriModal(ev));
     listaAppuntamenti.append(li);
@@ -163,24 +169,27 @@ function renderSquadre(squadre) {
   grigliaSquadre.replaceChildren(); // `grigliaSquadre` definito in main.js
 
   if (squadre.length === 0) {
-    grigliaSquadre.append(
-      make('p', { className: 'msg-vuoto', textContent: 'Nessuna squadra trovata.' })
-    );
+    // col-12 fa sì che il messaggio occupi tutta la larghezza nella Bootstrap row
+    const col = make('div', { className: 'col-12' });
+    col.append(make('p', { className: 'text-center text-muted py-5', textContent: 'Nessuna squadra trovata.' }));
+    grigliaSquadre.append(col);
     return;
   }
 
   for (const squadra of squadre) {
-    const card = make('div', { className: 'card-squadra' });
+    // col-12 mobile | col-md-6 tablet (6-6, ultima sola → 12 via CSS) | col-xl-3 desktop (4 colonne)
+    const col  = make('div', { className: 'col-12 col-md-6 col-xl-3' });
+    const card = make('div', { className: 'card h-100 text-center p-3 card-hover border-0 shadow-sm' });
 
     card.append(creaLogo(squadra.logo, squadra.nome, 'card-logo'));
     card.append(
-      make('p', { className: 'card-nome', textContent: squadra.nome }),
-      make('p', { className: 'card-meta', textContent: `${squadra.lega} · ${squadra.paese}` })
+      make('p', { className: 'fw-bold text-primary mb-1', textContent: squadra.nome }),
+      make('p', { className: 'text-muted small mb-2',     textContent: `${squadra.lega} · ${squadra.paese}` })
     );
 
     const isPref = ePreferito(squadra.id);
     const btnAggiungi = make('button', {
-      className: isPref ? 'btn-aggiungi btn-aggiungi--attivo' : 'btn-aggiungi',
+      className: isPref ? 'btn btn-secondary btn-sm w-100 mt-2' : 'btn btn-warning btn-sm w-100 mt-2',
       textContent: isPref ? '★ Preferita' : '★ Aggiungi ai preferiti',
       'data-preferito-id': squadra.id
     });
@@ -196,21 +205,23 @@ function renderSquadre(squadre) {
 
     card.addEventListener('click', () => apriDettagli(squadra)); // definita in main.js
 
-    grigliaSquadre.append(card);
+    col.append(card);
+    grigliaSquadre.append(col);
   }
 }
 
 // ===== RENDER VOCE EVENTO (lista dettagli) =====
 
 function creaVoceEvento(evento) {
-  const li = make('li', { className: 'evento-item' });
+  const li = make('li', { className: 'card p-2 evento-item border-0 shadow-sm' });
   li.append(
-    make('div', { className: 'evento-data',    textContent: evento.dataFormattata() }),
-    make('div', { className: 'evento-partita', textContent: `${evento.casa} vs ${evento.trasferta}` })
+    make('div', { className: 'text-muted small mb-1', textContent: evento.dataFormattata() }),
+    make('div', { className: 'fw-semibold small',     textContent: `${evento.casa} vs ${evento.trasferta}` })
   );
   const punteggio = evento.risultato();
   if (punteggio) {
-    li.append(make('span', { className: 'evento-punteggio', textContent: punteggio }));
+    // badge Bootstrap per il punteggio
+    li.append(make('span', { className: 'badge bg-primary mt-1', textContent: punteggio }));
   }
   li.addEventListener('click', () => apriModal(evento));
   return li;
@@ -222,16 +233,16 @@ function renderDettagli(squadra, prossimi, ultimi) {
   // `dettagliHeader`, `listaProssimi`, `listaUltimi` definiti in main.js (già svuotati da apriDettagli)
   dettagliHeader.append(creaLogo(squadra.logo, squadra.nome, 'dettagli-logo'));
 
-  const info = make('div', { className: 'dettagli-info' });
+  const info = make('div', {});
   info.append(
-    make('h2', { textContent: squadra.nome }),
-    make('p',  { textContent: `${squadra.lega} · ${squadra.paese}` })
+    make('h2', { className: 'h5 fw-bold text-primary mb-1', textContent: squadra.nome }),
+    make('p',  { className: 'text-muted small mb-0',         textContent: `${squadra.lega} · ${squadra.paese}` })
   );
   dettagliHeader.append(info);
 
   if (prossimi.length === 0) {
     listaProssimi.append(
-      make('li', { className: 'msg-nessun-evento', textContent: 'Nessun evento in programma.' })
+      make('li', { className: 'text-muted fst-italic small', textContent: 'Nessun evento in programma.' })
     );
   } else {
     for (const evento of prossimi) listaProssimi.append(creaVoceEvento(evento));
@@ -239,7 +250,7 @@ function renderDettagli(squadra, prossimi, ultimi) {
 
   if (ultimi.length === 0) {
     listaUltimi.append(
-      make('li', { className: 'msg-nessun-evento', textContent: 'Nessun risultato disponibile.' })
+      make('li', { className: 'text-muted fst-italic small', textContent: 'Nessun risultato disponibile.' })
     );
   } else {
     for (const evento of ultimi) listaUltimi.append(creaVoceEvento(evento));
@@ -263,11 +274,16 @@ function apriModal(evento) {
     ['Risultato', evento.risultato() || 'Non ancora disputata'],
   ];
 
-  for (const [etichetta, valore] of righe) {
-    const riga = make('div', { className: 'modal-riga' });
+  for (let i = 0; i < righe.length; i++) {
+    const [etichetta, valore] = righe[i];
+    // border-bottom su tutte le righe tranne l'ultima
+    const isUltima = i === righe.length - 1;
+    const riga = make('div', {
+      className: `d-flex justify-content-between align-items-baseline gap-3 py-2 small${isUltima ? '' : ' border-bottom'}`
+    });
     riga.append(
-      make('span', { className: 'modal-etichetta', textContent: etichetta }),
-      make('span', { className: 'modal-valore',    textContent: valore })
+      make('span', { className: 'fw-semibold text-muted flex-shrink-0', textContent: etichetta }),
+      make('span', { className: 'text-end',                              textContent: valore })
     );
     corpo.append(riga);
   }

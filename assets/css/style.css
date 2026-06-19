@@ -1,236 +1,53 @@
-/* SportsHub — Week Project Settimana VII — Mobile First */
+/* SportsHub — Week Project Settimana VII — Bootstrap version */
 
-* {
-  box-sizing: border-box;
+/* ===== OVERRIDE COLORE BRAND (#193366) ===== */
+
+:root {
+  --bs-primary: #193366;
+  --bs-primary-rgb: 25, 51, 102;
 }
 
-body {
-  margin: 0;
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #1a1a1a;
-  background: #f4f6fa;
+/* Bootstrap hard-coda i colori dei bottoni, quindi li sovrascriviamo esplicitamente */
+.btn-primary {
+  --bs-btn-bg: #193366;
+  --bs-btn-border-color: #193366;
+  --bs-btn-hover-bg: #142a52;
+  --bs-btn-hover-border-color: #142a52;
+  --bs-btn-active-bg: #102245;
+  --bs-btn-active-border-color: #102245;
+  --bs-btn-disabled-bg: #193366;
+  --bs-btn-disabled-border-color: #193366;
 }
 
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 16px;
+.btn-outline-primary {
+  --bs-btn-color: #193366;
+  --bs-btn-border-color: #193366;
+  --bs-btn-hover-bg: #193366;
+  --bs-btn-hover-border-color: #193366;
+  --bs-btn-active-bg: #193366;
+  --bs-btn-active-border-color: #193366;
 }
 
-@media (min-width: 768px) {
-  .container {
-    padding: 24px 20px;
+.bg-primary     { background-color: #193366 !important; }
+.text-primary   { color: #193366 !important; }
+.border-primary { border-color: #193366 !important; }
+
+/* ===== GRIGLIA SQUADRE: ultima card sola → occupa tutta la riga a tablet ===== */
+
+/* Solo nel range md (768px) fino a xl escluso (1200px):
+   se l'ultima card è in posizione dispari è sola nella riga → col-12 */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  #griglia-squadre > div:last-child:nth-child(odd) {
+    width: 100% !important;
   }
 }
 
 /* ===== HEADER ===== */
 
-.site-header {
-  background-color: #193366;
-  color: white;
-  padding: 20px 16px;
-  text-align: center;
-}
+.site-title    { letter-spacing: 1px; }
+.site-subtitle { letter-spacing: 0.3px; }
 
-@media (min-width: 768px) {
-  .site-header {
-    padding: 28px 20px;
-  }
-}
-
-.site-title {
-  margin: 0 0 4px; /* ridotto per avvicinare il sottotitolo */
-  font-size: 1.6rem;
-  letter-spacing: 1px;
-}
-
-/* sottotitolo dell'h1 */
-.site-subtitle {
-  margin: 0 0 16px;
-  font-size: 0.9rem;
-  opacity: 0.75;
-  letter-spacing: 0.3px;
-}
-
-@media (min-width: 480px) {
-  .site-title {
-    font-size: 2rem;
-  }
-}
-
-/* ===== FORM RICERCA ===== */
-
-/* mobile: colonna */
-.search-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 560px;
-  margin: 0 auto;
-}
-
-/* tablet+: riga */
-@media (min-width: 480px) {
-  .search-form {
-    flex-direction: row;
-  }
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  outline: none;
-}
-
-@media (min-width: 480px) {
-  .search-input {
-    flex: 1;
-    width: auto;
-  }
-}
-
-.btn-cerca {
-  width: 100%;
-  padding: 10px 22px;
-  background: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-@media (min-width: 480px) {
-  .btn-cerca {
-    width: auto;
-  }
-}
-
-.btn-cerca:hover {
-  background: #e8e8e8;
-}
-
-/* ===== SPINNER ===== */
-
-.spinner {
-  width: 44px;
-  height: 44px;
-  margin: 48px auto;
-  border: 5px solid #d0d8eb;
-  border-top-color: #193366;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* ===== ERRORE ===== */
-
-.errore {
-  background: #ffe5e5;
-  color: #aa0000;
-  border: 1px solid #ffb3b3;
-  border-radius: 8px;
-  padding: 14px 20px;
-  margin: 20px 0;
-  font-weight: 500;
-}
-
-/* ===== GRIGLIE CARD (squadre e preferiti) ===== */
-
-/* sotto 481px: 1 colonna */
-.griglia-squadre,
-.griglia-preferiti {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-.griglia-squadre { margin-top: 20px; }
-
-/* 481px+: 2 colonne fisse — ogni card prende metà dello spazio.
-   Solo nella griglia risultati l'ultima card sola nella riga si allarga;
-   nei preferiti le card restano sempre uguali tra loro */
-@media (min-width: 481px) {
-  .griglia-squadre,
-  .griglia-preferiti {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  .griglia-squadre > *:last-child:nth-child(2n+1) {
-    grid-column: 1 / -1;
-  }
-}
-
-/* 768px+: 3 colonne — reset regola 2-col e applica quella a 3 colonne */
-@media (min-width: 768px) {
-  .griglia-squadre,
-  .griglia-preferiti {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .griglia-squadre > *:last-child:nth-child(2n+1) {
-    grid-column: auto;
-  }
-
-  .griglia-squadre > *:last-child:nth-child(3n+1) {
-    grid-column: 1 / -1;
-  }
-}
-
-/* 1024px+: 4 colonne — reset regola 3-col e applica quella a 4 colonne */
-@media (min-width: 1024px) {
-  .griglia-squadre,
-  .griglia-preferiti {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .griglia-squadre > *:last-child:nth-child(3n+1) {
-    grid-column: auto;
-  }
-
-  .griglia-squadre > *:last-child:nth-child(4n+1) {
-    grid-column: 1 / -1;
-  }
-}
-
-/* Preferiti desktop: auto-fit adatta le colonne al numero di card,
-   così non restano colonne vuote e le card occupano tutta la larghezza */
-@media (min-width: 768px) {
-  .griglia-preferiti {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-}
-
-/* ===== CARD SQUADRA ===== */
-
-.card-squadra {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition:
-    transform 0.15s,
-    box-shadow 0.15s;
-}
-
-.card-squadra:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
-}
+/* ===== LOGHI SQUADRA ===== */
 
 .card-logo {
   width: 72px;
@@ -239,7 +56,14 @@ body {
   margin-bottom: 10px;
 }
 
-/* placeholder se il logo non esiste */
+.dettagli-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Placeholder mostrato quando il logo è assente o rotto */
 .card-logo-placeholder {
   width: 72px;
   height: 72px;
@@ -253,346 +77,78 @@ body {
   color: #aab;
 }
 
-.card-nome {
-  font-size: 1rem;
-  font-weight: 700;
-  margin: 0 0 4px;
-  color: #193366;
-}
+/* ===== CARD HOVER (squadre e preferiti) ===== */
 
-.card-meta {
-  font-size: 0.82rem;
-  color: #666;
-  margin: 0;
-}
-
-.msg-vuoto {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: #666;
-  padding: 40px 0;
-  font-size: 1.05rem;
-}
-
-/* ===== SEZIONE DETTAGLI ===== */
-
-.btn-indietro {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 20px;
-  padding: 8px 16px;
-  background: #e8ecf5;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-indietro:hover {
-  background: #d0d8eb;
-}
-
-/* mobile: header dettagli in colonna */
-.dettagli-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  text-align: center;
-}
-
-/* tablet+: header in riga */
-@media (min-width: 480px) {
-  .dettagli-header {
-    flex-direction: row;
-    text-align: left;
-  }
-}
-
-.dettagli-logo {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.dettagli-info h2 {
-  margin: 0 0 4px;
-  color: #193366;
-}
-
-.dettagli-info p {
-  margin: 0;
-  color: #555;
-  font-size: 0.9rem;
-}
-
-/* ===== LISTE EVENTI ===== */
-
-/* mobile: colonna */
-.dettagli-eventi {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-
-/* tablet+: due colonne */
-@media (min-width: 640px) {
-  .dettagli-eventi {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.eventi-titolo {
-  font-size: 1.1rem;
-  color: #193366;
-  margin: 0 0 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #193366;
-}
-
-.lista-eventi {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.evento-item {
-  background: white;
-  border-radius: 8px;
-  padding: 12px 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
-}
-
-.evento-data {
-  font-size: 0.78rem;
-  color: #888;
-  margin-bottom: 4px;
-}
-
-.evento-partita {
-  font-weight: 600;
-  font-size: 0.92rem;
-  color: #1a1a1a;
-}
-
-.evento-punteggio {
-  display: inline-block;
-  margin-top: 5px;
-  padding: 2px 8px;
-  background: #193366;
-  color: white;
-  border-radius: 4px;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.msg-nessun-evento {
-  color: #888;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-/* ===== SEZIONE PREFERITI ===== */
-
-.preferiti-section {
-  margin-top: 20px;
-}
-
-.preferiti-titolo {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 12px;
-}
-
-/* Card preferito: sfondo bianco uguale alle card dei risultati */
-.card-preferito {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 16px;
-  text-align: center;
+.card-hover {
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.card-preferito:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.13);
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14) !important;
 }
 
-/* ===== PULSANTI AZIONI PREFERITI ===== */
+/* ===== EVENTO NELLA LISTA DETTAGLI ===== */
 
-/* Bottone "★ Aggiungi ai preferiti" sulle card di ricerca */
-.btn-aggiungi {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 7px 10px;
-  background: hsl(45, 90%, 55%);
-  color: #3a2800;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  font-weight: 600;
+.evento-item {
   cursor: pointer;
-  transition: background 0.2s;
 }
 
-.btn-aggiungi:hover {
-  background: hsl(45, 90%, 48%);
+.evento-item:hover {
+  background: #f8f9ff !important;
 }
 
-/* Stato "già nei preferiti": tono spento */
-.btn-aggiungi--attivo {
-  background: #d0d8eb;
-  color: #555;
-}
+/* ===== BOTTONE RIMUOVI (sfondo rosato, come nell'originale) ===== */
 
-.btn-aggiungi--attivo:hover {
-  background: #bcc8e0;
-}
-
-/* Bottone "Rimuovi" nelle card dei preferiti */
 .btn-rimuovi {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 7px 10px;
   background: #ffe5e5;
   color: #aa0000;
   border: 1px solid #ffb3b3;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
 }
 
 .btn-rimuovi:hover {
   background: #ffd0d0;
+  color: #aa0000;
+  border-color: #ffb3b3;
 }
 
-/* ===== INTESTAZIONE PERSISTENTE RISULTATI ===== */
-
-/* Rimane visibile anche durante la vista dettagli */
-.sezione-titolo {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 24px 0 12px;
-}
-
-/* ===== FILTRO SPORT ===== */
-
-.filtro-sport {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
-}
-
-.btn-filtro {
-  padding: 6px 16px;
-  border: 2px solid #193366;
-  border-radius: 20px;
-  background: transparent;
-  color: #193366;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.btn-filtro:hover {
-  background: #193366;
-  color: white;
-}
-
-.btn-filtro--attivo {
-  background: #193366;
-  color: white;
-}
-
-/* ===== SEZIONE APPUNTAMENTI ===== */
-
-.appuntamenti-section {
-  margin-top: 20px;
-}
-
-.lista-appuntamenti {
-  list-style: none;
-  margin: 8px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+/* ===== APPUNTAMENTO (sezione preferiti) ===== */
 
 .appuntamento-item {
-  background: white;
-  border-radius: 8px;
-  padding: 12px 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .appuntamento-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
 }
 
-/* Lega/torneo nel card appuntamento */
-.evento-lega {
-  font-size: 0.78rem;
-  color: #888;
-  margin-top: 2px;
-}
+/* ===== MODAL OVERLAY CUSTOM ===== */
 
-/* Evento nella sezione dettagli: cliccabile per aprire il modal */
-.evento-item {
-  cursor: pointer;
-}
-
-.evento-item:hover {
-  background: #f8f9ff;
-}
-
-/* ===== MODAL EVENTO ===== */
-
-.modal {
+/* Usiamo un overlay custom (non il modal JS di Bootstrap) per mantenere
+   la stessa logica di show/hide tramite attributo `hidden` */
+.modal-overlay-wrapper {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 1060;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Forza display:none quando l'attributo hidden è presente */
-.modal[hidden] {
+.modal-overlay-wrapper[hidden] {
   display: none !important;
 }
 
-.modal-overlay {
+.modal-overlay-bg {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
 }
 
-.modal-contenuto {
+.modal-box {
   position: relative;
   z-index: 1;
   background: white;
@@ -603,55 +159,4 @@ body {
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.modal-chiudi {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: #666;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background 0.15s;
-}
-
-.modal-chiudi:hover {
-  background: #f0f0f0;
-}
-
-.modal-titolo {
-  margin: 0 0 16px;
-  font-size: 1.1rem;
-  color: #193366;
-  padding-right: 32px;
-  line-height: 1.3;
-}
-
-.modal-riga {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 0.9rem;
-}
-
-.modal-riga:last-child {
-  border-bottom: none;
-}
-
-.modal-etichetta {
-  font-weight: 600;
-  color: #555;
-  flex-shrink: 0;
-}
-
-.modal-valore {
-  color: #1a1a1a;
-  text-align: right;
 }
