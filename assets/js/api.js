@@ -46,15 +46,18 @@ class Evento {
 
 // ===== API =====
 
+// Helper privato: fetch + controllo HTTP + parsing JSON in un colpo solo
+async function fetchJSON(url) {
+  const risposta = await fetch(url);
+  if (!risposta.ok) throw new Error(`Errore HTTP: ${risposta.status}`);
+  return risposta.json();
+}
+
 // Cerca squadre per nome; restituisce tutti i risultati (il filtro sport è applicato client-side in applicaFiltro)
 async function cercaSquadre(query) {
   try {
-    const url = `${BASE_URL}/searchteams.php?t=${encodeURIComponent(query)}`;
-    const risposta = await fetch(url);
-    if (!risposta.ok) throw new Error(`Errore HTTP: ${risposta.status}`);
-    const dati = await risposta.json();
-    if (!dati.teams) return [];
-    return dati.teams.map(t => new Squadra(t));
+    const dati = await fetchJSON(`${BASE_URL}/searchteams.php?t=${encodeURIComponent(query)}`);
+    return (dati.teams || []).map(t => new Squadra(t));
   } catch (err) {
     throw new Error(`Ricerca fallita: ${err.message}`);
   }
@@ -63,23 +66,14 @@ async function cercaSquadre(query) {
 // Carica in parallelo i prossimi eventi e gli ultimi risultati di una squadra
 async function caricaDettagli(idSquadra) {
   try {
-    const [rispostaProssimi, rispostaUltimi] = await Promise.all([
-      fetch(`${BASE_URL}/eventsnext.php?id=${idSquadra}`),
-      fetch(`${BASE_URL}/eventslast.php?id=${idSquadra}`)
-    ]);
-
-    if (!rispostaProssimi.ok || !rispostaUltimi.ok) {
-      throw new Error('Errore nel caricamento degli eventi');
-    }
-
     const [datiProssimi, datiUltimi] = await Promise.all([
-      rispostaProssimi.json(),
-      rispostaUltimi.json()
+      fetchJSON(`${BASE_URL}/eventsnext.php?id=${idSquadra}`),
+      fetchJSON(`${BASE_URL}/eventslast.php?id=${idSquadra}`)
     ]);
-
-    const prossimi = (datiProssimi.events  || []).map(e => new Evento(e));
-    const ultimi   = (datiUltimi.results   || []).map(e => new Evento(e));
-    return { prossimi, ultimi };
+    return {
+      prossimi: (datiProssimi.events  || []).map(e => new Evento(e)),
+      ultimi:   (datiUltimi.results   || []).map(e => new Evento(e))
+    };
   } catch (err) {
     throw new Error(`Caricamento dettagli fallito: ${err.message}`);
   }
@@ -87,8 +81,6 @@ async function caricaDettagli(idSquadra) {
 
 // Carica solo i prossimi eventi di una squadra (usato per la sezione appuntamenti)
 async function caricaProssimiEventi(idSquadra) {
-  const risposta = await fetch(`${BASE_URL}/eventsnext.php?id=${idSquadra}`);
-  if (!risposta.ok) throw new Error(`Errore HTTP: ${risposta.status}`);
-  const dati = await risposta.json();
+  const dati = await fetchJSON(`${BASE_URL}/eventsnext.php?id=${idSquadra}`);
   return (dati.events || []).map(e => new Evento(e));
 }

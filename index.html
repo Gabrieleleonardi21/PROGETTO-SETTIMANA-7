@@ -38,7 +38,7 @@
       <!-- Sezione preferiti: visibile solo se ci sono squadre salvate -->
       <section id="preferiti-section" class="mt-4" hidden>
         <h2 class="h5 fw-bold mb-3">⭐ Le tue squadre preferite</h2>
-        <div id="griglia-preferiti" class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3"></div>
+        <div id="griglia-preferiti"></div>
       </section>
 
       <!-- Prossimi appuntamenti delle squadre preferite (caricati in parallelo all'avvio) -->
@@ -52,11 +52,11 @@
 
       <section id="risultati-section">
         <!-- Spinner Bootstrap -->
-        <div id="spinner" class="spinner-border text-primary d-block mx-auto my-5" role="status" hidden>
+        <div id="spinner" class="spinner-border text-primary d-block mx-auto my-5 d-none" role="status">
           <span class="visually-hidden">Caricamento…</span>
         </div>
         <div id="errore" class="alert alert-danger mt-3" hidden></div>
-        <div id="griglia-squadre" class="row g-3 mt-1"></div>
+        <div id="griglia-squadre" class="mt-1"></div>
       </section>
 
       <section id="dettagli-section" hidden>
@@ -64,15 +64,19 @@
         <button id="btn-indietro" class="btn btn-light btn-sm mb-3">
           ← Torna ai risultati
         </button>
-        <div id="dettagli-header" class="card border-0 shadow-sm p-3 mb-4 d-flex flex-column flex-sm-row align-items-center gap-3 text-center text-sm-start"></div>
-        <div class="row g-4">
-          <div class="col-12 col-md-6">
-            <h2 class="h6 fw-bold text-primary border-bottom border-primary pb-2 mb-3">Prossimi eventi</h2>
-            <ul id="lista-prossimi" class="list-unstyled d-flex flex-column gap-2"></ul>
-          </div>
-          <div class="col-12 col-md-6">
-            <h2 class="h6 fw-bold text-primary border-bottom border-primary pb-2 mb-3">Ultimi risultati</h2>
-            <ul id="lista-ultimi" class="list-unstyled d-flex flex-column gap-2"></ul>
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div id="dettagli-header" class="d-flex flex-column flex-sm-row align-items-center gap-3 text-center text-sm-start pb-3 mb-3 border-bottom"></div>
+            <div class="row g-4">
+              <div class="col-12 col-md-6">
+                <h2 class="h6 fw-bold text-primary border-bottom border-primary pb-2 mb-3">Prossimi eventi</h2>
+                <ul id="lista-prossimi" class="list-unstyled d-flex flex-column gap-2"></ul>
+              </div>
+              <div class="col-12 col-md-6">
+                <h2 class="h6 fw-bold text-primary border-bottom border-primary pb-2 mb-3">Ultimi risultati</h2>
+                <ul id="lista-ultimi" class="list-unstyled d-flex flex-column gap-2"></ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>

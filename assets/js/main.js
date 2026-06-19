@@ -24,6 +24,9 @@ const grigliaPreferiti    = document.getElementById('griglia-preferiti');
 const risultatiHeading    = document.getElementById('risultati-heading');
 const sezioneAppuntamenti = document.getElementById('appuntamenti-section');
 const listaAppuntamenti   = document.getElementById('lista-appuntamenti');
+const modalEvento         = document.getElementById('modal-evento');
+const modalTitolo         = document.getElementById('modal-titolo');
+const modalCorpo          = document.getElementById('modal-corpo');
 
 // ===== APPUNTAMENTI =====
 
@@ -61,7 +64,6 @@ async function apriDettagli(squadra) {
   dettagliHeader.replaceChildren();
   listaProssimi.replaceChildren();
   listaUltimi.replaceChildren();
-  impostaSpinner(true);
   mostraErrore(null);
 
   try {
@@ -69,8 +71,6 @@ async function apriDettagli(squadra) {
     renderDettagli(squadra, prossimi, ultimi);
   } catch (err) {
     mostraErrore(`Impossibile caricare i dettagli: ${err.message}`);
-  } finally {
-    impostaSpinner(false);
   }
 }
 
@@ -118,13 +118,15 @@ const ricercaDebounced = debounce((query) => eseguiRicerca(query), 400);
 // Submit immediato (tasto Invio o bottone "Cerca")
 formRicerca.addEventListener('submit', (e) => {
   e.preventDefault();
-  eseguiRicerca(inputRicerca.value.trim());
+  const query = inputRicerca.value.trim();
+  // Almeno 3 caratteri prima di interrogare l'API
+  if (query.length >= 3) eseguiRicerca(query);
 });
 
-// Ricerca live: si attiva 400ms dopo l'ultima battitura
+// Ricerca live: si attiva 400ms dopo l'ultima battitura, solo con ≥ 3 caratteri
 inputRicerca.addEventListener('input', () => {
   const query = inputRicerca.value.trim();
-  if (query) ricercaDebounced(query);
+  if (query.length >= 3) ricercaDebounced(query);
 });
 
 btnIndietro.addEventListener('click', tornaRisultati);
@@ -133,13 +135,11 @@ btnIndietro.addEventListener('click', tornaRisultati);
 document.querySelectorAll('.btn-filtro').forEach(btn => {
   btn.addEventListener('click', () => {
     filtroSport = btn.dataset.sport;
-    // Rimuove lo stato attivo da tutti i filtri, poi lo aggiunge al bottone cliccato
+    // toggle derivato dall'identità: nessuna lista di rimozioni/aggiunte separata
     document.querySelectorAll('.btn-filtro').forEach(b => {
-      b.classList.remove('btn-primary');
-      b.classList.add('btn-outline-primary');
+      b.classList.toggle('btn-primary', b === btn);
+      b.classList.toggle('btn-outline-primary', b !== btn);
     });
-    btn.classList.remove('btn-outline-primary');
-    btn.classList.add('btn-primary');
     applicaFiltro();
   });
 });

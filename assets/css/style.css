@@ -32,13 +32,45 @@
 .text-primary   { color: #193366 !important; }
 .border-primary { border-color: #193366 !important; }
 
-/* ===== GRIGLIA SQUADRE: ultima card sola → occupa tutta la riga a tablet ===== */
+/* ===== GRIGLIE SQUADRE E PREFERITI (CSS Grid) ===== */
 
-/* Solo nel range md (768px) fino a xl escluso (1200px):
-   se l'ultima card è in posizione dispari è sola nella riga → col-12 */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-  #griglia-squadre > div:last-child:nth-child(odd) {
-    width: 100% !important;
+#griglia-squadre,
+#griglia-preferiti {
+  display: grid;
+  grid-template-columns: 1fr; /* mobile (<480px): 1 colonna */
+  gap: 1rem;
+}
+
+/* Messaggio "nessuna squadra trovata" sempre su tutta la larghezza */
+#griglia-squadre > p {
+  grid-column: 1 / -1;
+}
+
+/* Da 480px: 2 colonne */
+@media (min-width: 480px) {
+  #griglia-squadre,
+  #griglia-preferiti {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Ultima card sola nella riga → occupa tutta la larghezza */
+  #griglia-squadre > div:last-child:nth-child(odd),
+  #griglia-preferiti > div:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Da 1200px: auto-fit riempie tutto lo spazio disponibile */
+@media (min-width: 1200px) {
+  #griglia-squadre,
+  #griglia-preferiti {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  /* Reset span manuale: stesso selettore per battere la specificità della regola 480px */
+  #griglia-squadre > div:last-child:nth-child(odd),
+  #griglia-preferiti > div:last-child:nth-child(odd) {
+    grid-column: auto;
   }
 }
 
@@ -54,6 +86,7 @@
   height: 72px;
   object-fit: contain;
   margin-bottom: 10px;
+  align-self: center; /* .card è flex-column: serve align-self per centrare orizzontalmente */
 }
 
 .dettagli-logo {
@@ -159,4 +192,9 @@
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Righe del modal: il border-bottom è sempre presente; CSS rimuove quello dell'ultima */
+.modal-riga:last-child {
+  border-bottom: none;
 }
