@@ -26,10 +26,24 @@
     </header>
 
     <main class="container">
+      <!-- Filtro per sport -->
+      <div class="filtro-sport">
+        <button type="button" class="btn-filtro btn-filtro--attivo" data-sport="">Tutti</button>
+        <button type="button" class="btn-filtro" data-sport="Soccer">Calcio</button>
+        <button type="button" class="btn-filtro" data-sport="Basketball">Basket</button>
+        <button type="button" class="btn-filtro" data-sport="American Football">Football</button>
+      </div>
+
       <!-- Sezione preferiti: visibile solo se ci sono squadre salvate -->
       <section id="preferiti-section" class="preferiti-section" hidden>
         <h2 class="preferiti-titolo">⭐ Le tue squadre preferite</h2>
         <div id="griglia-preferiti" class="griglia-preferiti"></div>
+      </section>
+
+      <!-- Prossimi appuntamenti delle squadre preferite (caricati in parallelo all'avvio) -->
+      <section id="appuntamenti-section" class="appuntamenti-section" hidden>
+        <h2 class="preferiti-titolo">📅 I tuoi prossimi appuntamenti</h2>
+        <ul id="lista-appuntamenti" class="lista-appuntamenti"></ul>
       </section>
 
       <!-- Intestazione persistente: appare dopo la prima ricerca e resta visibile anche nei dettagli -->
@@ -61,6 +75,19 @@
       </section>
     </main>
 
-    <script src="assets/js/script.js"></script>
+    <!-- Modal dettagli evento -->
+    <div id="modal-evento" class="modal" hidden>
+      <div id="modal-overlay" class="modal-overlay"></div>
+      <div class="modal-contenuto">
+        <button id="modal-chiudi" class="modal-chiudi" aria-label="Chiudi">✕</button>
+        <h3 id="modal-titolo" class="modal-titolo"></h3>
+        <div id="modal-corpo"></div>
+      </div>
+    </div>
+
+    <!-- Caricamento in ordine: api → ui → main -->
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/main.js"></script>
   </body>
 </html>
