@@ -1,0 +1,13 @@
+{
+  "name": "sportshub",
+  "version": "1.0.0",
+  "description": "SPA per cercare squadre sportive, eventi e preferiti — TheSportsDB",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

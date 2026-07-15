@@ -6,6 +6,7 @@ SPA (Single Page Application) per cercare squadre sportive, visualizzare prossim
 
 ## Tecnologie
 
+- **TypeScript 7** (ES Modules) — sorgenti in `src/`, compilazione a più file in `assets/js/`
 - **Bootstrap 5.3.3** (CDN) — layout, componenti UI, spinner, alert
 - **TheSportsDB API** (pubblica v1/json/3) — dati squadre ed eventi
 - **localStorage** — persistenza preferiti lato client
@@ -15,22 +16,36 @@ SPA (Single Page Application) per cercare squadre sportive, visualizzare prossim
 ## Struttura file
 
 ```
-index.html          → struttura statica, sezioni nascoste con `hidden`
+index.html            → struttura statica, sezioni nascoste con `hidden`
+tsconfig.json         → config TypeScript (rootDir src → outDir assets/js)
+src/                  → SORGENTI TypeScript (da modificare qui)
+  api.ts              → tipi API + classi Squadra/Evento + funzioni fetch
+  dom.ts              → riferimenti DOM tipizzati (condivisi fra i moduli)
+  ui.ts               → helper DOM, rendering, gestione localStorage
+  main.ts             → stato app, azioni, event listeners, init (entry point)
 assets/
-  css/style.css     → sovrascritture Bootstrap + classi custom
-  js/
-    api.js          → classi Squadra/Evento + funzioni fetch
-    ui.js           → helper DOM, rendering, gestione localStorage
-    main.js         → stato app, event listeners, init
+  css/style.css       → sovrascritture Bootstrap + classi custom
+  js/                 → OUTPUT compilato da `tsc` (.js + .js.map), caricato dall'HTML
 ```
 
-> `assets/js/script.js` è la versione monolitica precedente, non caricata dall'HTML — inattiva.
+> `assets/js/script.js` è la versione monolitica pre-refactor, non caricata dall'HTML — inattiva (eliminabile).
+
+> **Dipendenza circolare voluta:** `ui.ts` importa `apriDettagli`/`caricaAppuntamenti` da `main.ts` e `main.ts` importa da `ui.ts`. Funziona perché quelle due funzioni sono usate solo dentro i gestori di eventi (a runtime, non al caricamento del modulo). Vedi la sezione *Possibili miglioramenti*.
 
 ---
 
 ## Come avviare
 
-Basta aprire `index.html` nel browser. Non richiede build né server locale.
+1. Installa le dipendenze: `npm install`
+2. Compila: `npm run build` (oppure `npm run watch` per ricompilare a ogni salvataggio)
+3. Servi la cartella con un server locale — **necessario**: gli ES Modules non si caricano da `file://`.
+   Es. `npx serve` oppure l'estensione *Live Server* di VS Code.
+
+---
+
+## Possibili miglioramenti
+
+- **Rompere la dipendenza circolare** `ui ↔ main`: si può eliminare estraendo un piccolo bus di eventi (o passando `apriDettagli`/`caricaAppuntamenti` come callback in fase di render) al posto dell'import diretto da `main.ts`. Non fatto per mantenere il port fedele all'originale.
 
 ---
 

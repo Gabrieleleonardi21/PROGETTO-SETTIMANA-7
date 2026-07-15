@@ -92,9 +92,7 @@
       </div>
     </div>
 
-    <!-- Caricamento in ordine: api → ui → main -->
-    <script src="assets/js/api.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/main.js"></script>
+    <!-- Entry point ESM: main importa ui/dom/api, l'ordine lo gestisce il module loader -->
+    <script type="module" src="assets/js/main.js"></script>
   </body>
 </html>
